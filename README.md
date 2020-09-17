@@ -8,3 +8,6 @@ React native version of [this React app](https://codesandbox.io/s/password-prote
 - Clone Repo
 - Run `npm install`
 - Follow instructions from [expo.io docs](https://docs.expo.io/)
+
+### Notes
+- App still in progress
