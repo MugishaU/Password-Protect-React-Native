@@ -1,0 +1,654 @@
+import React, { useState } from "react";
+import {
+  StyleSheet,
+  Text,
+  View,
+  Clipboard,
+  Image,
+  TouchableOpacity,
+  TouchableWithoutFeedback,
+  TextInput,
+  Keyboard,
+  Vibration,
+  StatusBar,
+} from "react-native";
+import { NavigationContainer } from "@react-navigation/native";
+import { createStackNavigator } from "@react-navigation/stack";
+
+import CryptoES from "crypto-es";
+import base64 from "react-native-base64";
+
+import Twitter from "./assets/Twitter.png";
+import Instagram from "./assets/Instagram.png";
+import Gmail from "./assets/Gmail.png";
+import Facebook from "./assets/Facebook.png";
+import Add from "./assets/Add.png";
+import Show from "./assets/Show.png";
+import Hide from "./assets/Hide.png";
+import WebsiteIcon from "./assets/Website.png";
+import Check from "./assets/Check.png";
+
+const Stack = createStackNavigator();
+
+export default function App() {
+  return (
+    <NavigationContainer>
+      <Stack.Navigator
+        screenOptions={{
+          headerShown: false,
+        }}
+      >
+        <Stack.Screen name="Home" component={HomeScreen} />
+      </Stack.Navigator>
+    </NavigationContainer>
+  );
+}
+
+// export default App;
+
+function HomeScreen() {
+  const [website, setWebsite] = useState(null);
+  const [keyword, setKeyword] = useState(null);
+  const [tempKeyword, setTempKeyword] = useState(null);
+  const [clearKeywordBox, setClearKeywordBox] = useState(null);
+  const [openAddWebsite, setopenAddWebsite] = useState(false);
+  const [tempWebsite, setTempWebsite] = useState(null);
+  const [clearAddBox, setClearAddBox] = useState(null);
+  const [textBoxImage, setTextBoxImage] = useState(Show);
+  const [secureTextEntry, setSecureTextEntry] = useState(true);
+  const [mode, setMode] = useState(dark);
+  const [modeText, setModeText] = useState("LIGHT MODE");
+  const [titleColor, setTitleColor] = useState("#fff");
+  const [clearColor, setClearColor] = useState("#feda6a");
+  const [copyColor, setCopyColor] = useState("black");
+  const [submitColor, setSubmitColor] = useState("black");
+  const [barBackground, setBarBackground] = useState("#0e1111");
+  const [barType, setBarType] = useState("light-content");
+
+  const hashPassword = CryptoES.SHA256(website + keyword).toString();
+  const securePassword = base64.encode(hashPassword).substring(73, 88);
+
+  return (
+    <View style={mode.container}>
+      <StatusBar backgroundColor={barBackground} barStyle={barType} />
+
+      <View
+        style={{
+          flexDirection: "row",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <Text
+          style={{
+            fontSize: 90,
+            fontFamily: "monospace",
+            fontWeight: "bold",
+            color: titleColor,
+          }}
+        >
+          P
+        </Text>
+        <View>
+          <Text
+            style={{
+              fontSize: 35,
+              fontFamily: "monospace",
+              fontWeight: "bold",
+              marginBottom: -13,
+              color: titleColor,
+            }}
+          >
+            ASSWORD
+          </Text>
+          <Text
+            style={{
+              fontSize: 40,
+              fontFamily: "monospace",
+              fontWeight: "bold",
+              color: titleColor,
+            }}
+          >
+            ROTECT{" "}
+          </Text>
+        </View>
+        <Image
+          style={{ height: 65, width: 65, marginLeft: -10 }}
+          source={Check}
+        />
+      </View>
+
+      <View style={mode.iconContainerTop}>
+        <ImgButton
+          style={mode.icon}
+          image={Instagram}
+          onPress={() => {
+            setWebsite("INSTAGRAM");
+            setopenAddWebsite(false);
+            setTempWebsite(null);
+            Vibration.vibrate(25);
+          }}
+        />
+      </View>
+
+      <View style={mode.iconContainerMiddle}>
+        <ImgButton
+          style={mode.icon}
+          image={Twitter}
+          onPress={() => {
+            setWebsite("TWITTER");
+            setopenAddWebsite(false);
+            setTempWebsite(null);
+            Vibration.vibrate(25);
+          }}
+        />
+
+        <ImgButton
+          style={{
+            height: 60,
+            width: 60,
+            margin: 20,
+          }}
+          image={Add}
+          onPress={() => {
+            setopenAddWebsite(true);
+            Vibration.vibrate(25);
+          }}
+        />
+
+        <ImgButton
+          style={mode.icon}
+          image={Facebook}
+          onPress={() => {
+            setWebsite("FACEBOOK");
+            setopenAddWebsite(false);
+            setTempWebsite(null);
+            Vibration.vibrate(25);
+          }}
+        />
+      </View>
+      <View style={mode.iconContainerBottom}>
+        <ImgButton
+          style={mode.icon}
+          image={Gmail}
+          onPress={() => {
+            setWebsite("GMAIL");
+            setopenAddWebsite(false);
+            setTempWebsite(null);
+            Vibration.vibrate(25);
+          }}
+        />
+      </View>
+
+      <View
+        style={{
+          alignItems: "center",
+          justifyContent: "center",
+          margin: 15,
+        }}
+      >
+        {website === null && (
+          <Text style={mode.text}>
+            WEBSITE:
+            <Text
+              style={{
+                color: "#808080",
+              }}
+            >
+              {" "}
+              SELECT
+            </Text>
+          </Text>
+        )}
+
+        {website !== null && <Text style={mode.text}>WEBSITE: {website}</Text>}
+
+        {website !== null && keyword !== null && (
+          <Text style={mode.text}>
+            {" "}
+            PASSWORD:{" "}
+            <Text
+              style={{
+                fontSize: 20,
+              }}
+            >
+              {securePassword}
+            </Text>
+          </Text>
+        )}
+
+        {(website === null || keyword === null) && (
+          <>
+            <Text style={mode.text}>
+              {" "}
+              PASSWORD:{" "}
+              <Text
+                style={{
+                  color: "#808080",
+                  fontSize: 30,
+                }}
+              >
+                GENERATE
+              </Text>
+            </Text>
+          </>
+        )}
+      </View>
+
+      {openAddWebsite == false && (
+        <View stlye={{ flexDirection: "row" }}>
+          <InputBox
+            submitColor={submitColor}
+            miniIcon={mode.miniIcon}
+            textBoxImage={textBoxImage}
+            placeholder={"ENTER KEYWORD"}
+            value={clearKeywordBox}
+            submitButton={mode.submitButton}
+            secureTextEntry={secureTextEntry}
+            onChangeText={(text) => {
+              setTempKeyword(text);
+              setClearKeywordBox(null);
+            }}
+            onSubmitEditing={() => {
+              if (tempKeyword === "" || tempKeyword === null) {
+                alert("ENTER KEYWORD");
+                Vibration.vibrate();
+              } else if (website === null) {
+                alert("SELECT WEBSITE");
+                Vibration.vibrate();
+              } else {
+                setKeyword(tempKeyword);
+                setClearKeywordBox("");
+                setTempKeyword(null);
+              }
+            }}
+            onPress={() => {
+              if (tempKeyword === "" || tempKeyword === null) {
+                alert("ENTER KEYWORD");
+                Vibration.vibrate();
+              } else if (website === null) {
+                alert("SELECT WEBSITE");
+                Vibration.vibrate();
+              } else {
+                setKeyword(tempKeyword);
+                setClearKeywordBox("");
+                setTempKeyword(null);
+                Vibration.vibrate(25);
+                Keyboard.dismiss();
+              }
+            }}
+            iconOnPress={() => {
+              if (secureTextEntry === false) {
+                setSecureTextEntry(true);
+                setTextBoxImage(Show);
+                Vibration.vibrate(25);
+              } else {
+                setSecureTextEntry(false);
+                setTextBoxImage(Hide);
+                Vibration.vibrate(25);
+              }
+            }}
+            buttonStyle={mode.submitButton}
+            textBoxStyle={mode.TextBox}
+          />
+        </View>
+      )}
+      {openAddWebsite && (
+        <InputBox
+          submitColor={submitColor}
+          miniIcon={mode.miniIcon}
+          textBoxImage={WebsiteIcon}
+          placeholder={"ENTER WEBSITE"}
+          value={clearAddBox}
+          secureTextEntry={false}
+          onChangeText={(text) => {
+            setTempWebsite(text);
+            setClearAddBox(null);
+          }}
+          onSubmitEditing={() => {
+            if (tempWebsite === "" || tempWebsite === null) {
+              alert("ENTER WEBSITE");
+              Vibration.vibrate();
+            } else {
+              setWebsite(tempWebsite.toUpperCase());
+              setClearAddBox("");
+              setopenAddWebsite(false);
+              setTempWebsite(null);
+            }
+          }}
+          onPress={() => {
+            if (tempWebsite === "" || tempWebsite === null) {
+              alert("ENTER WEBSITE");
+              Vibration.vibrate();
+            } else {
+              Keyboard.dismiss();
+              setWebsite(tempWebsite.toUpperCase());
+              setClearAddBox("");
+              setopenAddWebsite(false);
+              setTempWebsite(null);
+              Vibration.vibrate(1);
+            }
+          }}
+          buttonStyle={mode.submitButton}
+          textBoxStyle={mode.TextBox}
+        />
+      )}
+
+      <Text>{"\n"}</Text>
+
+      <View
+        style={{
+          flexDirection: "row",
+        }}
+      >
+        <TouchableOpacity
+          style={mode.clear}
+          onPress={() => {
+            setWebsite(null);
+            setTempKeyword(null);
+            setKeyword(null);
+            setTempWebsite(null);
+            setopenAddWebsite(false);
+            setSecureTextEntry(true);
+            setTextBoxImage(Show);
+            setClearKeywordBox("");
+            Vibration.vibrate(25);
+            Keyboard.dismiss();
+          }}
+        >
+          <Text
+            style={{
+              color: clearColor,
+              fontSize: 30,
+              fontFamily: "monospace",
+            }}
+          >
+            CLEAR
+          </Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={mode.copy}
+          onPress={() => {
+            if (website === null) {
+              alert("SELECT WEBSITE");
+              Vibration.vibrate();
+            } else if (keyword === null || keyword === "") {
+              alert("ENTER KEYWORD");
+              Vibration.vibrate();
+            } else {
+              alert(website + " PASSWORD COPIED");
+              Clipboard.setString(securePassword);
+              Vibration.vibrate(25);
+            }
+          }}
+        >
+          <Text
+            style={{
+              color: copyColor,
+              fontSize: 30,
+              fontFamily: "monospace",
+            }}
+          >
+            COPY
+          </Text>
+        </TouchableOpacity>
+      </View>
+
+      <TouchableOpacity
+        onPress={() => {
+          Vibration.vibrate(25);
+          if (mode === light) {
+            setMode(dark);
+            setModeText("LIGHT MODE");
+            setTitleColor("#fff");
+            setClearColor("#feda6a");
+            setCopyColor("black");
+            setSubmitColor("black");
+            setBarBackground("#0e1111");
+            setBarType("light-content");
+          } else {
+            setMode(light);
+            setModeText("DARK MODE");
+            setTitleColor("#23120b");
+            setClearColor("#000080");
+            setCopyColor("#fff");
+            setSubmitColor("#fff");
+            setBarBackground("#8b9dc3");
+            setBarType("dark-content");
+          }
+        }}
+      >
+        <Text style={mode.text}>{modeText}</Text>
+      </TouchableOpacity>
+    </View>
+  );
+}
+
+function ImgButton(props) {
+  return (
+    <View>
+      <TouchableOpacity onPress={props.onPress}>
+        <Image source={props.image} style={props.style} />
+      </TouchableOpacity>
+    </View>
+  );
+}
+
+function InputBox(props) {
+  return (
+    <View
+      style={{
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "center",
+        backgroundColor: "#fff",
+        borderRadius: 10,
+      }}
+    >
+      <TouchableWithoutFeedback onPress={props.iconOnPress}>
+        <Image source={props.textBoxImage} style={props.miniIcon} />
+      </TouchableWithoutFeedback>
+      <TextInput
+        style={props.textBoxStyle}
+        placeholder={props.placeholder}
+        value={props.value}
+        secureTextEntry={props.secureTextEntry}
+        onChangeText={props.onChangeText}
+        onSubmitEditing={props.onSubmitEditing}
+      />
+
+      <TouchableOpacity style={props.buttonStyle} onPress={props.onPress}>
+        <Text
+          style={{
+            fontSize: 20,
+            fontWeight: "bold",
+            fontFamily: "monospace",
+            color: props.submitColor,
+          }}
+        >
+          SUBMIT
+        </Text>
+      </TouchableOpacity>
+    </View>
+  );
+}
+
+const dark = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "#1d1e22",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+
+  text: {
+    color: "#fff",
+    fontSize: 30,
+    fontFamily: "monospace",
+  },
+
+  icon: {
+    height: 80,
+    width: 80,
+    margin: 10,
+  },
+
+  miniIcon: {
+    height: 30,
+    width: 30,
+    margin: 5,
+    borderRadius: 5,
+  },
+
+  iconContainerMiddle: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "#393f4d",
+    borderRadius: 80,
+  },
+  iconContainerTop: {
+    flexDirection: "row",
+    backgroundColor: "#393f4d",
+    borderTopLeftRadius: 80,
+    borderTopRightRadius: 80,
+  },
+  iconContainerBottom: {
+    flexDirection: "row",
+    backgroundColor: "#393f4d",
+    borderBottomLeftRadius: 80,
+    borderBottomRightRadius: 80,
+  },
+
+  TextBox: {
+    fontFamily: "monospace",
+    backgroundColor: "#fff",
+    width: 240,
+    height: 40,
+    fontSize: 22,
+    padding: 5,
+  },
+
+  submitButton: {
+    fontFamily: "monospace",
+    height: 40,
+    alignItems: "center",
+    justifyContent: "center",
+    padding: 5,
+    borderTopRightRadius: 10,
+    borderBottomRightRadius: 10,
+    backgroundColor: "#feda6a",
+  },
+
+  copy: {
+    width: 150,
+    height: 50,
+    borderRadius: 10,
+    backgroundColor: "#feda6a",
+    alignItems: "center",
+    justifyContent: "center",
+    marginLeft: 5,
+  },
+  clear: {
+    width: 150,
+    height: 50,
+    borderRadius: 10,
+    borderWidth: 3,
+    borderColor: "#feda6a",
+    fontFamily: "monospace",
+    alignItems: "center",
+    justifyContent: "center",
+    marginRight: 5,
+  },
+});
+
+const light = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "#dbf3fa",
+    backgroundColor: "#dfe3ee",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+
+  text: {
+    color: "#23120b",
+    fontSize: 30,
+    fontFamily: "monospace",
+  },
+
+  icon: {
+    height: 80,
+    width: 80,
+    margin: 10,
+  },
+
+  miniIcon: {
+    height: 30,
+    width: 30,
+    margin: 5,
+    borderRadius: 5,
+  },
+
+  iconContainerMiddle: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "#8b9dc3",
+    borderRadius: 80,
+  },
+  iconContainerTop: {
+    flexDirection: "row",
+    backgroundColor: "#8b9dc3",
+    borderTopLeftRadius: 80,
+    borderTopRightRadius: 80,
+  },
+  iconContainerBottom: {
+    flexDirection: "row",
+    backgroundColor: "#8b9dc3",
+    borderBottomLeftRadius: 80,
+    borderBottomRightRadius: 80,
+  },
+
+  TextBox: {
+    fontFamily: "monospace",
+    backgroundColor: "#fff",
+    width: 240,
+    height: 40,
+    fontSize: 22,
+    padding: 5,
+  },
+
+  submitButton: {
+    fontFamily: "monospace",
+    height: 40,
+    alignItems: "center",
+    justifyContent: "center",
+    padding: 5,
+    borderTopRightRadius: 10,
+    borderBottomRightRadius: 10,
+    backgroundColor: "#000080",
+  },
+
+  copy: {
+    width: 150,
+    height: 50,
+    borderRadius: 10,
+    backgroundColor: "#000080",
+    alignItems: "center",
+    justifyContent: "center",
+    marginLeft: 5,
+  },
+  clear: {
+    width: 150,
+    height: 50,
+    borderRadius: 10,
+    borderWidth: 3,
+    borderColor: "#000080",
+    fontFamily: "monospace",
+    alignItems: "center",
+    justifyContent: "center",
+    marginRight: 5,
+  },
+});
